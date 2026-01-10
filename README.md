@@ -71,12 +71,12 @@
 
 | STT | Yêu cầu | Trạng thái |
 |-----|---------|------------|
-| 1 | Cho phép gõ lệnh nội trú hoặc ngoại trú để thực thi | ✅ Hoàn thành |
-| 2 | Cho phép redirection và pipe | ✅ Hoàn thành |
-| 3 | Cho phép chạy lệnh nền bằng `&` | ✅ Hoàn thành |
-| 4 | Cài đặt một số lệnh nội trú (cd, pwd, echo,...) | ✅ Hoàn thành |
-| 5 | Cho phép các loại ngoặc `'`, `"`, `\` | ✅ Hoàn thành |
-| 6 | Wildcards (`?*`) | ✅ Hoàn thành |
+| 1 | Cho phép gõ lệnh nội trú hoặc ngoại trú để thực thi | Hoàn thành |
+| 2 | Cho phép redirection và pipe | Hoàn thành |
+| 3 | Cho phép chạy lệnh nền bằng `&` | Hoàn thành |
+| 4 | Cài đặt một số lệnh nội trú (cd, pwd, echo,...) | Hoàn thành |
+| 5 | Cho phép các loại ngoặc `'`, `"`, `\` | Hoàn thành |
+| 6 | Wildcards (`?*`) | Hoàn thành |
 
 **Tổng kết:** 6/6 yêu cầu đã hoàn thành (100%)
 
