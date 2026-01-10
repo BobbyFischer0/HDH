@@ -84,13 +84,13 @@
 
 ## 3. PHÂN CÔNG NHIỆM VỤ
 
-| Phần | Thành viên | File phụ trách | Nhiệm vụ |
-|------|------------|----------------|----------|
-| Part 1 | Member 1 | `main.cpp`, `shell.h` | Vòng lặp chính của Shell, xử lý lỗi |
-| Part 2 | Member 2 | `parser.cpp`, `parser.h`, `wildcard.cpp`, `wildcard.h` | Phân tích input, xử lý quotes, wildcards |
-| Part 3 | Member 3 | `executor.cpp`, `executor.h` | Thực thi lệnh, pipe, redirection |
-| Part 4 | Member 4 | `builtins.cpp`, `builtins.h` | Các lệnh nội trú |
-| Part 5 | Member 5 | `signals.cpp`, `signals.h`, `env.cpp`, `env.h` | Xử lý tín hiệu, biến môi trường |
+| Phần | Thành viên | MSSV | Nhiệm vụ |
+|------|------------|------------|----------|
+| Part 1 | Phạm Đăng Bách | 20223871 | Vòng lặp chính của Shell, xử lý lỗi |
+| Part 2 | Đoàn Văn Thưởng | 20223817 | Phân tích input, xử lý quotes, wildcards |
+| Part 3 | Nguyễn Trương Hồng Đức | 20223919 | Thực thi lệnh, pipe, redirection |
+| Part 4 | Nguyễn Cao Quang Anh | 20223849 | Các lệnh nội trú |
+| Part 5 | Nguyễn Thế Hào | 20223959 | Xử lý tín hiệu, biến môi trường |
 
 ---
 
@@ -196,10 +196,6 @@ HDH/
     ├── env.cpp           # Quản lý biến môi trường
     └── wildcard.cpp      # Mở rộng wildcard
 ```
-
----
-
-## 6. TROUBLESHOOTING
 
 | Lỗi | Cách khắc phục |
 |-----|----------------|
