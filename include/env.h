@@ -23,8 +23,4 @@ void unset_env(const std::string& name);
 // Get all environment variables
 const std::map<std::string, std::string>& get_all_env();
 
-// Build envp array for execve (caller must free)
-char** build_envp();
-void free_envp(char** envp);
-
 #endif // ENV_H
