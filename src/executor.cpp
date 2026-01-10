@@ -1,6 +1,5 @@
 #include "executor.h"
 #include "builtins.h"
-#include "redirect.h"
 #include "signals.h"
 
 #include <unistd.h>

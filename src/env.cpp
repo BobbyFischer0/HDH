@@ -69,30 +69,3 @@ const std::map<std::string, std::string>& get_all_env() {
     return g_env_vars;
 }
 
-// ============================================================================
-// Build envp Array for execve
-// ============================================================================
-
-char** build_envp() {
-    char** envp = new char*[g_env_vars.size() + 1];
-    size_t i = 0;
-    
-    for (const auto& pair : g_env_vars) {
-        std::string entry = pair.first + "=" + pair.second;
-        envp[i] = new char[entry.size() + 1];
-        strcpy(envp[i], entry.c_str());
-        i++;
-    }
-    envp[i] = nullptr;
-    
-    return envp;
-}
-
-void free_envp(char** envp) {
-    if (envp == nullptr) return;
-    
-    for (size_t i = 0; envp[i] != nullptr; i++) {
-        delete[] envp[i];
-    }
-    delete[] envp;
-}
