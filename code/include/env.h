@@ -4,23 +4,20 @@
 #include <string>
 #include <map>
 
-// ============================================================================
-// Environment Variable Management
-// ============================================================================
-
-// Initialize environment from system
+// Quản lý biến môi trường
+// Khởi tạo biến môi trường từ hệ thống
 void init_environment();
 
-// Get environment variable value (empty if not set)
+// Lấy giá trị biến môi trường (rỗng nếu chưa thiết lập)
 std::string get_env(const std::string& name);
 
-// Set environment variable
+// Thiết lập biến môi trường
 void set_env(const std::string& name, const std::string& value);
 
-// Unset environment variable
+// Xóa biến môi trường
 void unset_env(const std::string& name);
 
-// Get all environment variables
+// Lấy tất cả biến môi trường
 const std::map<std::string, std::string>& get_all_env();
 
 #endif // ENV_H

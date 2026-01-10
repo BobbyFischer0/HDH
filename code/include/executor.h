@@ -3,20 +3,17 @@
 
 #include "shell.h"
 
-// ============================================================================
-// Command Execution
-// ============================================================================
-
-// Execute a complete pipeline
+// Thực thi lệnh
+// Thực thi toàn bộ pipeline
 int execute_pipeline(Pipeline& pipeline);
 
-// Execute a single command (called internally)
+// Thực thi một lệnh đơn (gọi nội bộ)
 int execute_command(Command& cmd, int input_fd, int output_fd);
 
-// Execute a built-in command (returns true if command was a built-in)
+// Thực thi lệnh nội trú (trả về true nếu là lệnh nội trú)
 bool execute_builtin(Command& cmd, int& exit_status);
 
-// Apply I/O redirections for a command
+// Áp dụng chuyển hướng I/O cho lệnh
 int apply_redirections(const Command& cmd);
 
 #endif // EXECUTOR_H

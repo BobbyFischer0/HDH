@@ -4,18 +4,16 @@
 #include <string>
 #include <vector>
 
-// ============================================================================
-// Wildcard Expansion
-// ============================================================================
 
-// Check if pattern contains wildcards
+// Mở rộng Wildcard
+// Kiểm tra pattern có chứa wildcard không
 bool has_wildcards(const std::string& pattern);
 
-// Expand a wildcard pattern to matching files
-// Returns original pattern if no matches found
+// Mở rộng wildcard pattern thành danh sách file khớp
+// Trả về pattern gốc nếu không có file khớp
 std::vector<std::string> expand_glob(const std::string& pattern);
 
-// Match a string against a pattern with * and ?
+// So khớp chuỗi với pattern có * và ?
 bool match_pattern(const std::string& pattern, const std::string& str);
 
 #endif // WILDCARD_H

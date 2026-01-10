@@ -1,6 +1,6 @@
 #include "shell.h"
-#include <cstring>   // for strerror
-#include <cerrno>    // for errno
+#include <cstring>   // cho strerror
+#include <cerrno>    // cho errno
 #include "parser.h"
 #include "executor.h"
 #include "builtins.h"
@@ -10,28 +10,25 @@
 #include <iostream>
 #include <cstdlib>
 
-// ============================================================================
-// Global Variables
-// ============================================================================
+// Biến toàn cục
 int g_last_exit_status = 0;
 bool g_running = true;
 
-// ============================================================================
-// Error Handling Implementation
-// ============================================================================
+
+// Xử lý lỗi
 const char* shell_strerror(ShellError code) {
     switch (code) {
-        case SHELL_OK:              return "Success";
-        case ERR_CMD_NOT_FOUND:     return "Command not found";
-        case ERR_PERMISSION_DENIED: return "Permission denied";
-        case ERR_FILE_NOT_FOUND:    return "No such file or directory";
-        case ERR_SYNTAX_ERROR:      return "Syntax error";
-        case ERR_FORK_FAILED:       return "Fork failed";
-        case ERR_EXEC_FAILED:       return "Execution failed";
-        case ERR_PIPE_FAILED:       return "Pipe creation failed";
-        case ERR_REDIRECT_FAILED:   return "Redirection failed";
-        case ERR_INVALID_ARGS:      return "Invalid arguments";
-        default:                    return "Unknown error";
+        case SHELL_OK:              return "Thành công";
+        case ERR_CMD_NOT_FOUND:     return "Không tìm thấy lệnh";
+        case ERR_PERMISSION_DENIED: return "Không có quyền truy cập";
+        case ERR_FILE_NOT_FOUND:    return "Không tìm thấy file hoặc thư mục";
+        case ERR_SYNTAX_ERROR:      return "Lỗi cú pháp";
+        case ERR_FORK_FAILED:       return "Lỗi fork";
+        case ERR_EXEC_FAILED:       return "Lỗi thực thi";
+        case ERR_PIPE_FAILED:       return "Lỗi tạo pipe";
+        case ERR_REDIRECT_FAILED:   return "Lỗi chuyển hướng";
+        case ERR_INVALID_ARGS:      return "Tham số không hợp lệ";
+        default:                    return "Lỗi không xác định";
     }
 }
 
@@ -43,34 +40,31 @@ void shell_perror(const std::string& prefix) {
     std::cerr << "myshell: " << prefix << ": " << strerror(errno) << std::endl;
 }
 
-// ============================================================================
-// Shell Initialization and Cleanup
-// ============================================================================
+
+// Khởi tạo và dọn dẹp Shell
 void shell_init() {
-    // Initialize environment variables
+    // Khởi tạo biến môi trường
     init_environment();
     
-    // Initialize built-in command registry
+    // Khởi tạo registry lệnh nội trú
     init_builtins();
     
-    // Setup signal handlers
+    // Thiết lập xử lý tín hiệu
     setup_shell_signals();
 }
 
 void shell_cleanup() {
-    // Any cleanup needed
+    // Dọn dẹp tài nguyên nếu cần
 }
 
-// ============================================================================
-// Read Input Line
-// ============================================================================
+// Đọc dòng lệnh từ người dùng
 std::string read_line() {
     std::string line;
     
-    // Print prompt
+    // In dấu nhắc lệnh
     std::cout << "myshell> " << std::flush;
     
-    // Read line
+    // Đọc dòng lệnh
     if (!std::getline(std::cin, line)) {
         // EOF (Ctrl+D)
         g_running = false;
@@ -81,29 +75,25 @@ std::string read_line() {
     return line;
 }
 
-// ============================================================================
-// Execute a Line
-// ============================================================================
+// Thực thi một dòng lệnh
 void execute_line(const std::string& line) {
-    // Skip empty lines and comments
+    // Bỏ qua dòng trống và comment
     if (line.empty() || line[0] == '#') {
         return;
     }
     
-    // Parse the line into a pipeline
+    // Phân tích dòng lệnh thành pipeline
     Pipeline pipeline = parse(line);
     
     if (pipeline.empty()) {
         return;
     }
     
-    // Execute the pipeline
+    // Thực thi pipeline
     g_last_exit_status = execute_pipeline(pipeline);
 }
 
-// ============================================================================
-// Main Shell Loop
-// ============================================================================
+// Vòng lặp chính của Shell
 void shell_loop() {
     while (g_running) {
         std::string line = read_line();
@@ -116,14 +106,12 @@ void shell_loop() {
     }
 }
 
-// ============================================================================
-// Main Entry Point
-// ============================================================================
+// Điểm vào chương trình
 int main(int argc, char* argv[]) {
-    // Initialize shell
+    // Khởi tạo shell
     shell_init();
     
-    // Check for -c option (execute command and exit)
+    // Kiểm tra tùy chọn -c (thực thi lệnh và thoát)
     if (argc >= 3 && std::string(argv[1]) == "-c") {
         std::string command;
         for (int i = 2; i < argc; i++) {
@@ -135,8 +123,8 @@ int main(int argc, char* argv[]) {
         return g_last_exit_status;
     }
     
-    // Interactive mode
-    std::cout << "MyShell v1.0 - Type 'help' for available commands" << std::endl;
+    // Chế độ tương tác
+    std::cout << "MyShell v1.0 - Gõ 'help' để xem danh sách lệnh" << std::endl;
     
     shell_loop();
     

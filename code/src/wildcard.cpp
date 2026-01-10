@@ -5,19 +5,13 @@
 #include <cstring>
 #include <algorithm>
 
-// ============================================================================
-// Check for Wildcards
-// ============================================================================
-
+// Kiểm tra có wildcard không
 bool has_wildcards(const std::string& pattern) {
     return pattern.find('*') != std::string::npos ||
            pattern.find('?') != std::string::npos;
 }
 
-// ============================================================================
-// Pattern Matching (supports * and ?)
-// ============================================================================
-
+// So khớp pattern (hỗ trợ * và ?)
 bool match_pattern(const std::string& pattern, const std::string& str) {
     size_t p = 0, s = 0;
     size_t star_p = std::string::npos;
@@ -25,29 +19,29 @@ bool match_pattern(const std::string& pattern, const std::string& str) {
     
     while (s < str.size()) {
         if (p < pattern.size() && (pattern[p] == '?' || pattern[p] == str[s])) {
-            // Match single character or exact match
+            // Khớp một ký tự hoặc khớp chính xác
             p++;
             s++;
         }
         else if (p < pattern.size() && pattern[p] == '*') {
-            // Star found - remember position
+            // Tìm thấy dấu * - ghi nhớ vị trí
             star_p = p;
             star_s = s;
             p++;
         }
         else if (star_p != std::string::npos) {
-            // Mismatch after star - backtrack
+            // Không khớp sau dấu * - quay lui
             p = star_p + 1;
             star_s++;
             s = star_s;
         }
         else {
-            // No match
+            // Không khớp
             return false;
         }
     }
     
-    // Check remaining pattern (should only be stars)
+    // Kiểm tra phần pattern còn lại (chỉ nên là các dấu *)
     while (p < pattern.size() && pattern[p] == '*') {
         p++;
     }
@@ -55,14 +49,11 @@ bool match_pattern(const std::string& pattern, const std::string& str) {
     return p == pattern.size();
 }
 
-// ============================================================================
-// Expand Wildcard Pattern
-// ============================================================================
-
+// Mở rộng Wildcard Pattern
 std::vector<std::string> expand_glob(const std::string& pattern) {
     std::vector<std::string> results;
     
-    // Find directory and file pattern
+    // Tìm đường dẫn thư mục và pattern file
     size_t last_slash = pattern.rfind('/');
     std::string dir_path;
     std::string file_pattern;
@@ -75,30 +66,30 @@ std::vector<std::string> expand_glob(const std::string& pattern) {
         file_pattern = pattern;
     }
     
-    // Open directory
+    // Mở thư mục
     DIR* dir = opendir(dir_path.c_str());
     if (dir == nullptr) {
-        // Return original pattern if directory can't be opened
+        // Trả về pattern gốc nếu không mở được thư mục
         results.push_back(pattern);
         return results;
     }
     
-    // Read directory entries
+    // Đọc các entry trong thư mục
     struct dirent* entry;
     while ((entry = readdir(dir)) != nullptr) {
         std::string name = entry->d_name;
         
-        // Skip hidden files unless pattern starts with .
+        // Bỏ qua file ẩn trừ khi pattern bắt đầu bằng .
         if (name[0] == '.' && file_pattern[0] != '.') {
             continue;
         }
         
-        // Skip . and ..
+        // Bỏ qua . và ..
         if (name == "." || name == "..") {
             continue;
         }
         
-        // Check if name matches pattern
+        // Kiểm tra tên có khớp pattern không
         if (match_pattern(file_pattern, name)) {
             if (dir_path != ".") {
                 results.push_back(dir_path + name);
@@ -110,10 +101,10 @@ std::vector<std::string> expand_glob(const std::string& pattern) {
     
     closedir(dir);
     
-    // Sort results
+    // Sắp xếp kết quả
     std::sort(results.begin(), results.end());
     
-    // If no matches, return original pattern
+    // Nếu không có kết quả, trả về pattern gốc
     if (results.empty()) {
         results.push_back(pattern);
     }

@@ -6,14 +6,10 @@
 #include <map>
 #include <string>
 
-// ============================================================================
-// Built-in Command Type
-// ============================================================================
+// Kiểu hàm cho lệnh nội trú
 using BuiltinFunc = std::function<int(const std::vector<std::string>&)>;
 
-// ============================================================================
-// Built-in Commands
-// ============================================================================
+// Các lệnh nội trú
 int builtin_cd(const std::vector<std::string>& args);
 int builtin_pwd(const std::vector<std::string>& args);
 int builtin_echo(const std::vector<std::string>& args);
@@ -23,9 +19,8 @@ int builtin_export(const std::vector<std::string>& args);
 int builtin_unset(const std::vector<std::string>& args);
 int builtin_env(const std::vector<std::string>& args);
 
-// ============================================================================
-// Built-in Registry
-// ============================================================================
+
+// Registry lệnh nội trú
 bool is_builtin(const std::string& name);
 BuiltinFunc get_builtin(const std::string& name);
 void init_builtins();

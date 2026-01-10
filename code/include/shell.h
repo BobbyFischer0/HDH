@@ -4,9 +4,8 @@
 #include <string>
 #include <vector>
 
-// ============================================================================
-// Error Codes
-// ============================================================================
+
+// Mã lỗi
 enum ShellError {
     SHELL_OK = 0,
     ERR_CMD_NOT_FOUND = 127,
@@ -20,44 +19,39 @@ enum ShellError {
     ERR_INVALID_ARGS = 7
 };
 
-// ============================================================================
-// Data Structures
-// ============================================================================
+// Cấu trúc dữ liệu
 struct Command {
-    std::vector<std::string> args;      // Command and arguments
-    std::string input_file;              // Input redirection (<)
-    std::string output_file;             // Output redirection (> or >>)
-    bool append_output = false;          // true for >>, false for >
-    std::string error_file;              // Error redirection (2>)
-    bool background = false;             // Run in background (&)
+    std::vector<std::string> args;      // Lệnh và tham số
+    std::string input_file;              // Chuyển hướng input (<)
+    std::string output_file;             // Chuyển hướng output (> hoặc >>)
+    bool append_output = false;          // true cho >>, false cho >
+    std::string error_file;              // Chuyển hướng error (2>)
+    bool background = false;             // Chạy trong nền (&)
     
     bool empty() const { return args.empty(); }
     std::string name() const { return args.empty() ? "" : args[0]; }
 };
 
 struct Pipeline {
-    std::vector<Command> commands;       // Commands connected by pipes
-    bool background = false;             // Entire pipeline in background
+    std::vector<Command> commands;       // Các lệnh nối bởi pipe
+    bool background = false;             // Toàn bộ pipeline chạy nền
     
     bool empty() const { return commands.empty(); }
 };
 
-// ============================================================================
-// Global State
-// ============================================================================
-extern int g_last_exit_status;           // Exit status of last command ($?)
-extern bool g_running;                   // Main loop control
 
-// ============================================================================
-// Error Handling Functions
-// ============================================================================
+// Trạng thái toàn cục
+extern int g_last_exit_status;           // Mã thoát của lệnh cuối ($?)
+extern bool g_running;                   // Điều khiển vòng lặp chính
+
+
+// Các hàm xử lý lỗi
 void shell_error(ShellError code, const std::string& context);
 void shell_perror(const std::string& prefix);
 const char* shell_strerror(ShellError code);
 
-// ============================================================================
-// Main Shell Functions
-// ============================================================================
+
+// Các hàm Shell chính
 void shell_init();
 void shell_cleanup();
 void shell_loop();

@@ -3,16 +3,12 @@
 #include <cstdlib>
 #include <unistd.h>
 
-// ============================================================================
-// Environment Variable Storage
-// ============================================================================
 
+// Lưu trữ biến môi trường
 static std::map<std::string, std::string> g_env_vars;
 
-// ============================================================================
-// Initialize Environment from System
-// ============================================================================
 
+// Khởi tạo biến môi trường từ hệ thống
 void init_environment() {
     extern char **environ;
     
@@ -27,10 +23,7 @@ void init_environment() {
     }
 }
 
-// ============================================================================
-// Get Environment Variable
-// ============================================================================
-
+// Lấy giá trị biến môi trường
 std::string get_env(const std::string& name) {
     auto it = g_env_vars.find(name);
     if (it != g_env_vars.end()) {
@@ -39,33 +32,24 @@ std::string get_env(const std::string& name) {
     return "";
 }
 
-// ============================================================================
-// Set Environment Variable
-// ============================================================================
-
+// Thiết lập biến môi trường
 void set_env(const std::string& name, const std::string& value) {
     g_env_vars[name] = value;
     
-    // Also update the actual environment for child processes
+    // Cập nhật cả môi trường thực để tiến trình con kế thừa
     setenv(name.c_str(), value.c_str(), 1);
 }
 
-// ============================================================================
-// Unset Environment Variable
-// ============================================================================
 
+// Xóa biến môi trường
 void unset_env(const std::string& name) {
     g_env_vars.erase(name);
     
-    // Also remove from actual environment
+    // Xóa khỏi môi trường thực
     unsetenv(name.c_str());
 }
 
-// ============================================================================
-// Get All Environment Variables
-// ============================================================================
-
+// Lấy tất cả biến môi trường
 const std::map<std::string, std::string>& get_all_env() {
     return g_env_vars;
 }
-

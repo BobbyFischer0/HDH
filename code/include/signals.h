@@ -3,23 +3,21 @@
 #include <csignal>
 #include <sys/types.h>
 
-// ============================================================================
-// Signal Handling
-// ============================================================================
 
-// Current foreground process group (0 if none)
+// Xử lý tín hiệu
+// PID của tiến trình foreground hiện tại (0 nếu không có)
 extern volatile sig_atomic_t g_foreground_pid;
 
-// Setup signal handlers for the shell process
+// Thiết lập signal handler cho tiến trình shell
 void setup_shell_signals();
 
-// Setup default signal handlers for child processes
+// Thiết lập signal handler mặc định cho tiến trình con
 void setup_child_signals();
 
-// SIGCHLD handler - reap zombie processes
+// Handler SIGCHLD - thu hồi tiến trình zombie
 void sigchld_handler(int sig);
 
-// SIGINT handler - for the shell (ignore)
+// Handler SIGINT - cho shell (bỏ qua)
 void sigint_handler(int sig);
 
 #endif // SIGNALS_H

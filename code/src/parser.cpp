@@ -1,15 +1,12 @@
 #include "parser.h"
 #include "env.h"
 #include "wildcard.h"
-#include <unistd.h>   // for getpid
+#include <unistd.h>   // cho getpid
 
 #include <sstream>
 #include <cctype>
 
-// ============================================================================
-// Tokenizer Implementation
-// ============================================================================
-
+// Triển khai Tokenizer
 class Tokenizer {
 public:
     Tokenizer(const std::string& input) : input_(input), pos_(0) {}
@@ -26,7 +23,7 @@ public:
             
             char c = input_[pos_];
             
-            // Check for operators
+            // Kiểm tra các toán tử
             if (c == '|') {
                 tokens.push_back(Token(TOKEN_PIPE, "|"));
                 pos_++;
@@ -53,11 +50,11 @@ public:
                 pos_++;
             }
             else if (c == '#') {
-                // Comment - ignore rest of line
+                // Comment - bỏ qua phần còn lại của dòng
                 break;
             }
             else {
-                // Parse a word (possibly quoted)
+                // Phân tích một từ (có thể có ngoặc)
                 std::string word = parse_word();
                 if (!word.empty()) {
                     tokens.push_back(Token(TOKEN_WORD, word));
@@ -85,27 +82,27 @@ private:
         while (pos_ < input_.size()) {
             char c = input_[pos_];
             
-            // Stop at whitespace or operators
+            // Dừng khi gặp khoảng trắng hoặc toán tử
             if (std::isspace(c) || c == '|' || c == '<' || c == '>' || 
                 c == '&' || c == '#') {
                 break;
             }
             
-            // Handle 2> specially
+            // Xử lý đặc biệt cho 2>
             if (c == '2' && pos_ + 1 < input_.size() && input_[pos_ + 1] == '>') {
                 break;
             }
             
-            // Handle single quotes - preserve literally
+            // Xử lý ngoặc đơn - giữ nguyên nội dung
             if (c == '\'') {
                 pos_++;
                 while (pos_ < input_.size() && input_[pos_] != '\'') {
                     result += input_[pos_];
                     pos_++;
                 }
-                if (pos_ < input_.size()) pos_++; // Skip closing quote
+                if (pos_ < input_.size()) pos_++; // Bỏ qua dấu ngoặc đóng
             }
-            // Handle double quotes - allow escapes
+            // Xử lý ngoặc kép - cho phép escape
             else if (c == '"') {
                 pos_++;
                 while (pos_ < input_.size() && input_[pos_] != '"') {
@@ -120,9 +117,9 @@ private:
                     result += input_[pos_];
                     pos_++;
                 }
-                if (pos_ < input_.size()) pos_++; // Skip closing quote
+                if (pos_ < input_.size()) pos_++; // Bỏ qua dấu ngoặc đóng
             }
-            // Handle escape character
+            // Xử lý ký tự escape
             else if (c == '\\') {
                 pos_++;
                 if (pos_ < input_.size()) {
@@ -130,7 +127,7 @@ private:
                     pos_++;
                 }
             }
-            // Regular character
+            // Ký tự thường
             else {
                 result += c;
                 pos_++;
@@ -146,10 +143,7 @@ std::vector<Token> tokenize(const std::string& line) {
     return tokenizer.tokenize();
 }
 
-// ============================================================================
-// Variable Expansion
-// ============================================================================
-
+// Mở rộng biến môi trường
 std::string expand_variables(const std::string& input) {
     std::string result;
     size_t i = 0;
@@ -158,17 +152,17 @@ std::string expand_variables(const std::string& input) {
         if (input[i] == '$' && i + 1 < input.size()) {
             i++;
             
-            // $? - last exit status
+            // $? - mã thoát của lệnh cuối
             if (input[i] == '?') {
                 result += std::to_string(g_last_exit_status);
                 i++;
             }
-            // $$ - shell PID
+            // $$ - PID của shell
             else if (input[i] == '$') {
                 result += std::to_string(getpid());
                 i++;
             }
-            // $VAR or ${VAR}
+            // $VAR hoặc ${VAR}
             else if (std::isalpha(input[i]) || input[i] == '_' || input[i] == '{') {
                 bool braced = (input[i] == '{');
                 if (braced) i++;
@@ -198,10 +192,7 @@ std::string expand_variables(const std::string& input) {
     return result;
 }
 
-// ============================================================================
-// Parser Implementation
-// ============================================================================
-
+// Triển khai Parser
 Pipeline parse(const std::string& line) {
     Pipeline pipeline;
     std::vector<Token> tokens = tokenize(line);
@@ -214,10 +205,10 @@ Pipeline parse(const std::string& line) {
         
         switch (tok.type) {
             case TOKEN_WORD: {
-                // Expand variables
+                // Mở rộng biến
                 std::string expanded = expand_variables(tok.value);
                 
-                // Expand wildcards
+                // Mở rộng wildcard
                 if (has_wildcards(expanded)) {
                     std::vector<std::string> matches = expand_glob(expanded);
                     for (const auto& match : matches) {
@@ -278,7 +269,7 @@ Pipeline parse(const std::string& line) {
         i++;
     }
     
-    // Add last command
+    // Thêm lệnh cuối cùng
     if (!current_cmd.empty()) {
         pipeline.commands.push_back(current_cmd);
     }

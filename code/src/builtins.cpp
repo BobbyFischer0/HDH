@@ -8,10 +8,8 @@
 #include <map>
 #include <climits>
 
-// ============================================================================
-// Built-in Registry
-// ============================================================================
 
+// Registry lệnh nội trú
 static std::map<std::string, BuiltinFunc> g_builtins;
 
 void init_builtins() {
@@ -37,51 +35,48 @@ BuiltinFunc get_builtin(const std::string& name) {
     return nullptr;
 }
 
-// ============================================================================
-// cd - Change Directory
-// ============================================================================
-
+// cd - Đổi thư mục
 int builtin_cd(const std::vector<std::string>& args) {
     std::string target;
     
     if (args.size() < 2) {
-        // No argument - go to HOME
+        // Không có tham số - về thư mục HOME
         target = get_env("HOME");
         if (target.empty()) {
-            std::cerr << "cd: HOME not set" << std::endl;
+            std::cerr << "cd: HOME chưa được thiết lập" << std::endl;
             return 1;
         }
     } else if (args[1] == "-") {
-        // cd - : go to previous directory
+        // cd - : quay về thư mục trước
         target = get_env("OLDPWD");
         if (target.empty()) {
-            std::cerr << "cd: OLDPWD not set" << std::endl;
+            std::cerr << "cd: OLDPWD chưa được thiết lập" << std::endl;
             return 1;
         }
         std::cout << target << std::endl;
     } else if (args[1] == "~") {
         target = get_env("HOME");
         if (target.empty()) {
-            std::cerr << "cd: HOME not set" << std::endl;
+            std::cerr << "cd: HOME chưa được thiết lập" << std::endl;
             return 1;
         }
     } else {
         target = args[1];
     }
     
-    // Save current directory as OLDPWD
+    // Lưu thư mục hiện tại vào OLDPWD
     char cwd[PATH_MAX];
     if (getcwd(cwd, sizeof(cwd)) != nullptr) {
         set_env("OLDPWD", cwd);
     }
     
-    // Change directory
+    // Đổi thư mục
     if (chdir(target.c_str()) != 0) {
         shell_perror("cd: " + target);
         return 1;
     }
     
-    // Update PWD
+    // Cập nhật biến PWD
     if (getcwd(cwd, sizeof(cwd)) != nullptr) {
         set_env("PWD", cwd);
     }
@@ -89,12 +84,10 @@ int builtin_cd(const std::vector<std::string>& args) {
     return 0;
 }
 
-// ============================================================================
-// pwd - Print Working Directory
-// ============================================================================
 
+// pwd - In thư mục hiện tại
 int builtin_pwd(const std::vector<std::string>& args) {
-    (void)args;  // Unused
+    (void)args;  // Không sử dụng
     
     char cwd[PATH_MAX];
     if (getcwd(cwd, sizeof(cwd)) != nullptr) {
@@ -106,15 +99,13 @@ int builtin_pwd(const std::vector<std::string>& args) {
     }
 }
 
-// ============================================================================
-// echo - Print Arguments
-// ============================================================================
 
+// echo - In văn bản ra màn hình
 int builtin_echo(const std::vector<std::string>& args) {
     bool newline = true;
     size_t start = 1;
     
-    // Check for -n flag (no newline)
+    // Kiểm tra cờ -n (không xuống dòng)
     if (args.size() > 1 && args[1] == "-n") {
         newline = false;
         start = 2;
@@ -134,10 +125,7 @@ int builtin_echo(const std::vector<std::string>& args) {
     return 0;
 }
 
-// ============================================================================
-// exit - Exit Shell
-// ============================================================================
-
+// exit - Thoát Shell
 int builtin_exit(const std::vector<std::string>& args) {
     int exit_code = g_last_exit_status;
     
@@ -145,7 +133,7 @@ int builtin_exit(const std::vector<std::string>& args) {
         try {
             exit_code = std::stoi(args[1]);
         } catch (...) {
-            std::cerr << "exit: " << args[1] << ": numeric argument required" << std::endl;
+            std::cerr << "exit: " << args[1] << ": yêu cầu tham số là số" << std::endl;
             exit_code = 2;
         }
     }
@@ -155,46 +143,40 @@ int builtin_exit(const std::vector<std::string>& args) {
     return exit_code;
 }
 
-// ============================================================================
-// help - Show Available Commands
-// ============================================================================
-
+// help - Hiển thị trợ giúp
 int builtin_help(const std::vector<std::string>& args) {
     (void)args;
     
-    std::cout << "MyShell v1.0 - Built-in Commands:" << std::endl;
+    std::cout << "MyShell v1.0 - Các lệnh nội trú:" << std::endl;
     std::cout << std::endl;
-    std::cout << "  cd [dir]       Change directory (default: HOME)" << std::endl;
-    std::cout << "  pwd            Print working directory" << std::endl;
-    std::cout << "  echo [args]    Print arguments (-n for no newline)" << std::endl;
-    std::cout << "  export VAR=val Set environment variable" << std::endl;
-    std::cout << "  unset VAR      Remove environment variable" << std::endl;
-    std::cout << "  env            List environment variables" << std::endl;
-    std::cout << "  exit [code]    Exit shell with optional exit code" << std::endl;
-    std::cout << "  help           Show this help message" << std::endl;
+    std::cout << "  cd [dir]       Đổi thư mục (mặc định: HOME)" << std::endl;
+    std::cout << "  pwd            In thư mục hiện tại" << std::endl;
+    std::cout << "  echo [args]    In văn bản (-n để không xuống dòng)" << std::endl;
+    std::cout << "  export VAR=val Thiết lập biến môi trường" << std::endl;
+    std::cout << "  unset VAR      Xóa biến môi trường" << std::endl;
+    std::cout << "  env            Liệt kê tất cả biến môi trường" << std::endl;
+    std::cout << "  exit [code]    Thoát shell với mã thoát tùy chọn" << std::endl;
+    std::cout << "  help           Hiển thị trợ giúp này" << std::endl;
     std::cout << std::endl;
-    std::cout << "Features:" << std::endl;
-    std::cout << "  cmd1 | cmd2    Pipe output of cmd1 to cmd2" << std::endl;
-    std::cout << "  cmd < file     Redirect input from file" << std::endl;
-    std::cout << "  cmd > file     Redirect output to file" << std::endl;
-    std::cout << "  cmd >> file    Append output to file" << std::endl;
-    std::cout << "  cmd 2> file    Redirect errors to file" << std::endl;
-    std::cout << "  cmd &          Run command in background" << std::endl;
-    std::cout << "  'text'         Single quotes (literal)" << std::endl;
-    std::cout << "  \"text\"         Double quotes (allows $vars)" << std::endl;
-    std::cout << "  *.txt          Wildcard expansion" << std::endl;
+    std::cout << "Các tính năng:" << std::endl;
+    std::cout << "  cmd1 | cmd2    Pipe output của cmd1 sang cmd2" << std::endl;
+    std::cout << "  cmd < file     Chuyển hướng input từ file" << std::endl;
+    std::cout << "  cmd > file     Chuyển hướng output ra file" << std::endl;
+    std::cout << "  cmd >> file    Nối output vào cuối file" << std::endl;
+    std::cout << "  cmd 2> file    Chuyển hướng lỗi ra file" << std::endl;
+    std::cout << "  cmd &          Chạy lệnh trong nền" << std::endl;
+    std::cout << "  'text'         Ngoặc đơn (giữ nguyên)" << std::endl;
+    std::cout << "  \"text\"         Ngoặc kép (mở rộng $vars)" << std::endl;
+    std::cout << "  *.txt          Mở rộng wildcard" << std::endl;
     std::cout << std::endl;
     
     return 0;
 }
 
-// ============================================================================
-// export - Set Environment Variable
-// ============================================================================
-
+// export - Thiết lập biến môi trường
 int builtin_export(const std::vector<std::string>& args) {
     if (args.size() < 2) {
-        // No arguments - show all exported variables
+        // Không có tham số - liệt kê tất cả biến
         for (const auto& pair : get_all_env()) {
             std::cout << "export " << pair.first << "=\"" << pair.second << "\"" << std::endl;
         }
@@ -210,17 +192,14 @@ int builtin_export(const std::vector<std::string>& args) {
             std::string value = arg.substr(eq_pos + 1);
             set_env(name, value);
         } else {
-            // Just export existing variable (no-op for now)
+            // Chỉ export biến đã có (chưa triển khai)
         }
     }
     
     return 0;
 }
 
-// ============================================================================
-// unset - Remove Environment Variable
-// ============================================================================
-
+// unset - Xóa biến môi trường
 int builtin_unset(const std::vector<std::string>& args) {
     for (size_t i = 1; i < args.size(); i++) {
         unset_env(args[i]);
@@ -228,10 +207,7 @@ int builtin_unset(const std::vector<std::string>& args) {
     return 0;
 }
 
-// ============================================================================
-// env - List Environment Variables
-// ============================================================================
-
+// env - Liệt kê tất cả biến môi trường
 int builtin_env(const std::vector<std::string>& args) {
     (void)args;
     
