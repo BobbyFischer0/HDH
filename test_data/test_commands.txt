@@ -1,0 +1,81 @@
+# ============================================================
+# DỮ LIỆU MẪU - CÁC LỆNH TEST CHO MYSHELL
+# ============================================================
+
+# ------------------------------
+# 1. TEST LỆNH NỘI TRÚ
+# ------------------------------
+pwd
+cd /tmp
+pwd
+cd -
+echo "Hello World"
+echo -n "No newline: "
+echo "Done"
+
+# ------------------------------
+# 2. TEST BIẾN MÔI TRƯỜNG
+# ------------------------------
+export MY_VAR=HelloShell
+echo $MY_VAR
+env | grep MY_VAR
+unset MY_VAR
+
+# ------------------------------
+# 3. TEST PIPE
+# ------------------------------
+ls | wc -l
+cat test_data/names.txt | sort
+cat test_data/names.txt | sort | uniq
+cat test_data/numbers.txt | sort -n | head -3
+
+# ------------------------------
+# 4. TEST REDIRECTION
+# ------------------------------
+echo "Test output" > test_data/output.txt
+cat < test_data/input.txt
+echo "Append line" >> test_data/output.txt
+cat test_data/output.txt
+ls /nonexistent 2> test_data/error.txt
+
+# ------------------------------
+# 5. TEST BACKGROUND
+# ------------------------------
+sleep 3 &
+echo "Shell vẫn tiếp tục nhận lệnh"
+
+# ------------------------------
+# 6. TEST WILDCARDS
+# ------------------------------
+ls *.cpp
+ls src/*.cpp
+ls test_data/*.txt
+echo ???.txt
+
+# ------------------------------
+# 7. TEST QUOTES
+# ------------------------------
+echo '$HOME'
+echo "$HOME"
+echo "Hello World"
+echo 'Single quotes: $HOME'
+echo "Double quotes: $HOME"
+
+# ------------------------------
+# 8. TEST EXIT STATUS
+# ------------------------------
+ls /tmp
+echo "Exit code: $?"
+ls /nonexistent_folder
+echo "Exit code: $?"
+
+# ------------------------------
+# 9. TEST KẾT HỢP
+# ------------------------------
+cat test_data/names.txt | sort | uniq > test_data/unique_names.txt
+cat test_data/unique_names.txt
+
+# ------------------------------
+# 10. THOÁT SHELL
+# ------------------------------
+exit
