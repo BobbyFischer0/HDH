@@ -1,311 +1,214 @@
-# MyShell - A Bash-like Shell Implementation
+# BÁO CÁO BÀI TẬP LỚN: XÂY DỰNG ỨNG DỤNG SHELL
 
-A Unix-like shell implementation in C++ supporting command execution, pipes, redirection, background processes, and advanced input processing.
+**Đề tài 4:** Xây dựng ứng dụng shell (tương tự bash)
 
-## Team Members & Responsibilities
-
-This project is divided into 5 parts for team collaboration:
-
-| Part | Member | Responsibility |
-|------|--------|----------------|
-| **Part 1** | Member 1 | Core Shell Loop & Error Handling |
-| **Part 2** | Member 2 | Input Parsing, Quotes, Wildcards |
-| **Part 3** | Member 3 | Command Execution, Pipes, Redirection |
-| **Part 4** | Member 4 | Built-in Commands |
-| **Part 5** | Member 5 | Signals & Environment Variables |
+**Ngôn ngữ:** C/C++
 
 ---
 
-## Requirements
+## 1. CÁC CHỨC NĂNG
 
-- **Operating System**: Linux/Unix or WSL (Windows Subsystem for Linux)
-- **Compiler**: g++ with C++17 support
-- **Build Tool**: make
+### 1.1 Thực thi lệnh
+
+| Chức năng | Mô tả | Ví dụ |
+|-----------|-------|-------|
+| Lệnh ngoại trú | Thực thi chương trình bên ngoài bằng `fork()` + `execvp()` | `ls -la`, `cat file.txt` |
+| Lệnh nội trú | Thực thi trong tiến trình shell | `cd`, `pwd`, `echo`, `exit` |
+
+### 1.2 Redirection (Chuyển hướng I/O)
+
+| Cú pháp | Mô tả |
+|---------|-------|
+| `cmd < file` | Đọc input từ file |
+| `cmd > file` | Ghi output ra file (ghi đè) |
+| `cmd >> file` | Ghi output ra file (nối tiếp) |
+| `cmd 2> file` | Chuyển hướng stderr ra file |
+
+### 1.3 Pipe (Đường ống)
+
+| Cú pháp | Mô tả |
+|---------|-------|
+| `cmd1 \| cmd2` | Nối output của cmd1 vào input của cmd2 |
+| `cmd1 \| cmd2 \| cmd3` | Hỗ trợ nhiều pipe liên tiếp |
+
+### 1.4 Chạy lệnh nền
+
+| Cú pháp | Mô tả |
+|---------|-------|
+| `cmd &` | Chạy lệnh trong background, shell tiếp tục nhận lệnh mới |
+
+### 1.5 Lệnh nội trú (Built-in Commands)
+
+| Lệnh | Mô tả |
+|------|-------|
+| `cd [dir]` | Thay đổi thư mục làm việc |
+| `pwd` | In thư mục hiện tại |
+| `echo [args]` | In văn bản ra màn hình |
+| `export VAR=val` | Thiết lập biến môi trường |
+| `unset VAR` | Xóa biến môi trường |
+| `env` | Liệt kê tất cả biến môi trường |
+| `exit [code]` | Thoát shell |
+| `help` | Hiển thị trợ giúp |
+
+### 1.6 Xử lý Quotes (Ngoặc)
+
+| Loại | Mô tả | Ví dụ |
+|------|-------|-------|
+| Single quote `'...'` | Giữ nguyên nội dung (literal) | `echo '$HOME'` → `$HOME` |
+| Double quote `"..."` | Cho phép mở rộng biến | `echo "$HOME"` → `/home/user` |
+| Backslash `\` | Escape ký tự đặc biệt | `echo Hello\ World` |
+
+### 1.7 Wildcards (Ký tự đại diện)
+
+| Pattern | Mô tả |
+|---------|-------|
+| `*` | Khớp 0 hoặc nhiều ký tự bất kỳ |
+| `?` | Khớp đúng 1 ký tự bất kỳ |
 
 ---
 
-## Quick Start
+## 2. MỨC ĐỘ HOÀN THIỆN
+
+| STT | Yêu cầu | Trạng thái |
+|-----|---------|------------|
+| 1 | Cho phép gõ lệnh nội trú hoặc ngoại trú để thực thi | ✅ Hoàn thành |
+| 2 | Cho phép redirection và pipe | ✅ Hoàn thành |
+| 3 | Cho phép chạy lệnh nền bằng `&` | ✅ Hoàn thành |
+| 4 | Cài đặt một số lệnh nội trú (cd, pwd, echo,...) | ✅ Hoàn thành |
+| 5 | Cho phép các loại ngoặc `'`, `"`, `\` | ✅ Hoàn thành |
+| 6 | Wildcards (`?*`) | ✅ Hoàn thành |
+
+**Tổng kết:** 6/6 yêu cầu đã hoàn thành (100%)
+
+---
+
+## 3. PHÂN CÔNG NHIỆM VỤ
+
+| Phần | Thành viên | File phụ trách | Nhiệm vụ |
+|------|------------|----------------|----------|
+| Part 1 | Member 1 | `main.cpp`, `shell.h` | Vòng lặp chính của Shell, xử lý lỗi |
+| Part 2 | Member 2 | `parser.cpp`, `parser.h`, `wildcard.cpp`, `wildcard.h` | Phân tích input, xử lý quotes, wildcards |
+| Part 3 | Member 3 | `executor.cpp`, `executor.h` | Thực thi lệnh, pipe, redirection |
+| Part 4 | Member 4 | `builtins.cpp`, `builtins.h` | Các lệnh nội trú |
+| Part 5 | Member 5 | `signals.cpp`, `signals.h`, `env.cpp`, `env.h` | Xử lý tín hiệu, biến môi trường |
+
+---
+
+## 4. HƯỚNG DẪN CÀI ĐẶT, DỊCH VÀ SỬ DỤNG
+
+### 4.1 Yêu cầu hệ thống
+
+- **Hệ điều hành:** Linux/Unix hoặc WSL (Windows Subsystem for Linux)
+- **Trình biên dịch:** g++ hỗ trợ C++17
+- **Công cụ build:** make
+- **Cài đặt (nếu chưa có):**
+  ```bash
+  sudo apt update
+  sudo apt install g++ make
+  ```
+
+### 4.2 Hướng dẫn biên dịch
 
 ```bash
-# Build the project
+# Clone hoặc giải nén project vào thư mục
+
+# Di chuyển vào thư mục project
+cd HDH
+
+# Biên dịch
 make
 
-# Run the shell
-./myshell
-
-# Run with a single command
-./myshell -c "echo hello world"
-
-# Clean build files
+# Xóa file build (nếu cần build lại)
 make clean
+make
 ```
 
----
+### 4.3 Hướng dẫn sử dụng
 
-## Part-by-Part Guide
-
-### Part 1: Core Shell Loop & Error Handling (Member 1)
-
-
-**What it does**:
-- Main entry point and shell loop (read → parse → execute)
-- Error codes and error handling functions
-- Global state management
-
-**How to test**:
 ```bash
+# Chạy shell
 ./myshell
+
+# Hoặc chạy 1 lệnh rồi thoát
+./myshell -c "echo hello world"
 ```
 
-**Key functions**:
-- `shell_init()` - Initialize the shell
-- `shell_loop()` - Main read-eval-print loop
-- `read_line()` - Read user input
-- `shell_error()` - Display error messages
+### 4.4 Ví dụ sử dụng
 
----
-
-### Part 2: Input Parsing & Wildcards (Member 2)
-
-
-**What it does**:
-- Tokenize input into words and operators
-- Handle single quotes `'...'` (literal)
-- Handle double quotes `"..."` (allows `$vars`)
-- Handle escape character `\`
-- Expand wildcards `*` and `?`
-
-**How to test**:
 ```bash
+# Khởi động shell
 ./myshell
-echo hello world                    
-echo 'single quotes $HOME'          
-echo "double quotes $HOME"          
-echo Hello\ World                   
-echo *.cpp                          
-echo ???.txt                        
-```
+MyShell v1.0 - Type 'help' for available commands
 
-**Key functions**:
-- `tokenize()` - Split input into tokens
-- `parse()` - Build Pipeline from tokens
-- `expand_variables()` - Replace `$VAR` with values
-- `expand_glob()` - Expand wildcard patterns
+# Lệnh cơ bản
+myshell> pwd
+/home/user
 
----
+myshell> cd /tmp
+myshell> ls -la
 
-### Part 3: Command Execution & Pipes (Member 3)
-
-
-**What it does**:
-- Execute external commands with `fork()` and `execvp()`
-- Create pipes for command chaining
-- Handle I/O redirection (`<`, `>`, `>>`, `2>`)
-- Support background execution (`&`)
-
-**How to test**:
-```bash
-./myshell
-
-# External commands
-ls -la
-cat /etc/passwd
-
-# Pipes
-ls | grep cpp
-ls -la | grep src | wc -l
-cat file.txt | sort | uniq
+# Pipe
+myshell> ls | grep cpp | wc -l
 
 # Redirection
-echo "hello" > output.txt         
-cat < output.txt                  
-echo "world" >> output.txt         
-ls /nonexistent 2> error.txt       
+myshell> echo "Hello" > output.txt
+myshell> cat < output.txt
 
 # Background
-sleep 5 &
-echo "still running"
-```
+myshell> sleep 10 &
+[12345] Running in background
 
-**Key functions**:
-- `execute_pipeline()` - Execute commands connected by pipes
-- `execute_command()` - Execute a single command
-- `apply_redirections()` - Setup file redirections
+# Wildcards
+myshell> ls *.cpp
 
-**Pipe Algorithm**:
-```
-cmd1 | cmd2 | cmd3
-  ↓      ↓      ↓
-[write]→[read/write]→[read]
+# Quotes
+myshell> echo '$HOME'
+$HOME
+myshell> echo "$HOME"
+/home/user
+
+# Thoát
+myshell> exit
 ```
 
 ---
 
-### Part 4: Built-in Commands (Member 4)
-
-
-**What it does**:
-- Commands that run in the shell process itself
-- Cannot be external programs (like `cd`)
-
-**How to test**:
-```bash
-./myshell
-
-# Directory navigation
-pwd                     
-cd /tmp                 
-cd -                   
-cd ~                   
-
-# Output
-echo hello world        
-echo -n "no newline"    
-
-# Environment
-export VAR=value        
-echo $VAR               
-env                     
-unset VAR              
-
-# Help & Exit
-help                    
-exit                    
-exit 42               
-```
-
-**Built-in commands table**:
-| Command | Description |
-|---------|-------------|
-| `cd [dir]` | Change directory |
-| `pwd` | Print working directory |
-| `echo [args]` | Print arguments |
-| `export VAR=val` | Set environment variable |
-| `unset VAR` | Remove environment variable |
-| `env` | List all environment variables |
-| `exit [code]` | Exit the shell |
-| `help` | Show help |
-
----
-
-### Part 5: Signals & Environment (Member 5)
-
-
-**What it does**:
-- Handle Ctrl+C (SIGINT) - stops child, not shell
-- Handle Ctrl+Z (SIGTSTP) - suspend (ignored by shell)
-- Reap zombie processes (SIGCHLD)
-- Manage environment variables (`$VAR`, `$?`, `$$`)
-
-**How to test**:
-```bash
-./myshell
-
-# Signal handling
-sleep 100              
-# Press Ctrl+C          
-echo "still here"       
-
-# Environment variables
-export NAME=MyShell
-echo "Hello $NAME"      
-echo "PID is $$"     
-
-# Exit status
-ls /nonexistent
-echo "Exit code: $?"    
-```
-
-**Key functions**:
-- `setup_shell_signals()` - Configure signal handlers for shell
-- `setup_child_signals()` - Restore default handlers in children
-- `sigchld_handler()` - Reap zombie processes
-- `get_env()`, `set_env()`, `unset_env()` - Manage variables
-
----
-
-## Project Structure
+## 5. CẤU TRÚC THƯ MỤC
 
 ```
 HDH/
-├── Makefile                 # Build configuration
-├── README.md               # This file
-├── include/                # Header files
-│   ├── shell.h            # Core structures
-│   ├── parser.h           # Parser declarations
-│   ├── executor.h         # Executor declarations
-│   ├── builtins.h         # Built-in commands
-│   ├── signals.h          # Signal handling
-│   ├── env.h              # Environment variables
-│   ├── redirect.h         # I/O redirection
-│   └── wildcard.h         # Wildcard expansion
-└── src/                    # Source files
-    ├── main.cpp           # Entry point
-    ├── parser.cpp         # Input parsing
-    ├── executor.cpp       # Command execution
-    ├── builtins.cpp       # Built-in commands
-    ├── signals.cpp        # Signal handlers
-    ├── env.cpp            # Environment management
-    ├── redirect.cpp       # Redirection handling
-    └── wildcard.cpp       # Glob patterns
+├── Makefile              # File cấu hình biên dịch
+├── README.md             # File báo cáo này
+├── include/              # Các file header (.h)
+│   ├── shell.h           # Cấu trúc dữ liệu chính
+│   ├── parser.h          # Khai báo parser
+│   ├── executor.h        # Khai báo executor
+│   ├── builtins.h        # Khai báo lệnh nội trú
+│   ├── signals.h         # Khai báo xử lý tín hiệu
+│   ├── env.h             # Khai báo biến môi trường
+│   └── wildcard.h        # Khai báo wildcard
+└── src/                  # Các file source code (.cpp)
+    ├── main.cpp          # Entry point
+    ├── parser.cpp        # Phân tích input
+    ├── executor.cpp      # Thực thi lệnh
+    ├── builtins.cpp      # Lệnh nội trú
+    ├── signals.cpp       # Xử lý tín hiệu
+    ├── env.cpp           # Quản lý biến môi trường
+    └── wildcard.cpp      # Mở rộng wildcard
 ```
 
 ---
 
-## Building on Different Platforms
+## 6. TROUBLESHOOTING
 
-### Linux (Native)
-```bash
-make
-./myshell
-```
-
-### Windows with WSL
-```bash
-wsl
-cd /mnt/d/ComVisLab/HDH
-make
-./myshell
-```
-
-### macOS
-```bash
-make
-./myshell
-```
+| Lỗi | Cách khắc phục |
+|-----|----------------|
+| "Command not found" | Đảm bảo chạy trên Linux/WSL, không phải Windows CMD |
+| Build errors | Cài đặt g++: `sudo apt install g++` |
+| Permission denied | Chạy lệnh: `chmod +x myshell` |
 
 ---
 
-## Features Summary
+**Môn học:** Hệ điều hành
 
-| Feature | Syntax | Example |
-|---------|--------|---------|
-| Execute command | `cmd args` | `ls -la` |
-| Pipe | `cmd1 \| cmd2` | `ls \| grep .cpp` |
-| Input redirect | `cmd < file` | `sort < data.txt` |
-| Output redirect | `cmd > file` | `echo hi > out.txt` |
-| Append | `cmd >> file` | `echo hi >> out.txt` |
-| Error redirect | `cmd 2> file` | `ls bad 2> err.txt` |
-| Background | `cmd &` | `sleep 10 &` |
-| Single quotes | `'text'` | `echo '$HOME'` |
-| Double quotes | `"text"` | `echo "$HOME"` |
-| Variables | `$VAR` | `echo $PATH` |
-| Exit status | `$?` | `echo $?` |
-| Shell PID | `$$` | `echo $$` |
-| Wildcards | `*`, `?` | `ls *.cpp` |
-
----
-
-## Troubleshooting
-
-**"Command not found"**: Make sure to run in Linux/WSL, not Windows CMD.
-
-**Build errors**: Ensure g++ is installed: `sudo apt install g++`
-
-**Permission denied**: Run `chmod +x myshell` after building.
-
----
-
-## License
-
-Educational project for Operating Systems course.
+**Đề tài:** Xây dựng ứng dụng Shell
